@@ -111,6 +111,17 @@ _Bool button(int but)
 			return false;
 		}
 
+	case 2:
+		if(HAL_GPIO_ReadPin(USER_RESET_GPIO_Port, USER_RESET_Pin) == GPIO_PIN_RESET)
+		{
+			return true;
+		}
+
+		else
+		{
+			return false;
+		}
+
 	default:
 		return false;
 	}
@@ -167,6 +178,7 @@ int main(void)
 	      }
 
 	      led_set(led, true);
+
 	      while(button(0)) {}
 	  }
 	  if (button(1))
@@ -187,6 +199,16 @@ int main(void)
 	  	      HAL_Delay(20);
 	  	  }
 
+	  if(button(2))
+	  {
+		  led_set(led, false);
+
+		  led = 0;
+
+		  led_set(led, true);
+
+		  while(button(2)) {}
+	  }
 
     /* USER CODE END WHILE */
 
@@ -276,11 +298,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : USER_BUTTON2_Pin */
-  GPIO_InitStruct.Pin = USER_BUTTON2_Pin;
+  /*Configure GPIO pins : USER_BUTTON2_Pin USER_RESET_Pin */
+  GPIO_InitStruct.Pin = USER_BUTTON2_Pin|USER_RESET_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(USER_BUTTON2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
