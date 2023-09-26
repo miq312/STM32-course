@@ -1,0 +1,39 @@
+#include "main.h"
+
+void configure_led(void); //konfiguracja poczatkowych rejestrow GPIO PA5
+void delay(void); // opoznienie
+
+int main(void)
+{
+    configure_led();
+
+    while(1)
+    {
+		GPIOA->BSRR |= GPIO_BSRR_BS5; // ustawienie wysokiego stanu logicznego dla GPIO PA5
+		delay();
+		GPIOA->BSRR |= GPIO_BSRR_BR5; // ustawienie niskiego stanu logicznego dla GPIO PA5
+		delay();
+
+    }
+}
+
+void configure_led(void)
+{
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN; // uruchomienie zegara dla szyny AHB2 do ktorej podlaczony jest port GPIO
+
+	GPIOA->MODER |= GPIO_MODER_MODE5_0;    // ustawienie GPIO PA5 jako wyjscie
+	GPIOA->MODER &= ~(GPIO_MODER_MODE5_1);
+
+	GPIOA->OTYPER &= ~(GPIO_OTYPER_OT5);  // ustawienie wyjscia GPIO PA5 jako push-pull
+
+	GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED5); // ustawienie szybkosci wyjscia GPIO PA5 jako low-speed
+
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPD5_1;   // dodanie dla wyjscia GPIO PA5 rezystora pull-down
+	GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD5_0);
+
+}
+
+void delay(void)
+{
+	for(int i = 0; i < 99999; i++) {}
+}
